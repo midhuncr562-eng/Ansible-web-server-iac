@@ -1,0 +1,42 @@
+
+---
+- name: Configure Apache Web Servers
+  hosts: webservers
+  become: yes
+
+  vars_files:
+    - ../group_vars/all.yml
+
+  tasks:
+    - name: Update package cache
+      apt:
+        update_cache: yes
+
+    - name: Install Apache
+      apt:
+        name: "{{ apache_package }}"
+        state: present
+
+    - name: Create administrative user
+      user:
+        name: "{{ admin_user }}"
+        shell: /bin/bash
+        groups: sudo
+        append: yes
+        create_home: yes
+        state: present
+
+    - name: Deploy company homepage
+      template:
+        src: ../templates/index.html.j2
+        dest: /var/www/html/index.html
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Start and enable Apache
+      service:
+        name: "{{ apache_service }}"
+        state: started
+        enabled: yes
+

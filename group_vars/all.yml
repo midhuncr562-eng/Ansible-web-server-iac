@@ -1,0 +1,5 @@
+---
+company_name: ABC Corporation
+admin_user: webadmin
+apache_package: apache2
+apache_service: apache2
